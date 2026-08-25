@@ -25,17 +25,15 @@
       "category": "public.app-category.developer-tools",
       "target": [
         {
-          "target": "dmg",
+          "target": "zip",
           "arch": ["arm64", "x64"]
         }
       ],
       "identity": null,
+      "notarize": false,
       "extendInfo": {
         "LSUIElement": true
       }
-    },
-    "dmg": {
-      "title": "TokenBar ${version}"
     }
   }
 }
