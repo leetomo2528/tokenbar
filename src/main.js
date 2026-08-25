@@ -14,6 +14,7 @@ let panel = null;
 let timer = null;
 let settings = null;
 let lastSnapshot = null;
+let lastHiddenAt = 0;
 
 /* ---------- 설정 ---------- */
 
@@ -50,13 +51,13 @@ function saveSettings(next) {
 /* ---------- 표시 유틸 ---------- */
 
 function compactTokens(n) {
-  if (n >= 1_000_000) return (n / 1_000_000).toFixed(n >= 10_000_000 ? 0 : 1) + 'M';
-  if (n >= 1_000) return (n / 1_000).toFixed(n >= 10_000 ? 0 : 1) + 'K';
+  if (n >= 1000000) return (n / 1000000).toFixed(n >= 10000000 ? 0 : 1) + 'M';
+  if (n >= 1000) return (n / 1000).toFixed(n >= 10000 ? 0 : 1) + 'K';
   return String(n);
 }
 
 function trayTitle(snap) {
-  if (!snap || !snap.hasData) return '—';
+  if (!snap || !snap.ok || !snap.hasData) return '—';
   const w = snap.window;
   if (settings.trayMetric === 'cost') return '$' + w.cost.toFixed(2);
   if (settings.trayMetric === 'calls') return String(w.calls);
@@ -69,7 +70,12 @@ async function refresh() {
   try {
     lastSnapshot = await collect({ root: settings.root, windowHours: settings.windowHours });
   } catch (err) {
-    lastSnapshot = { ok: false, error: String(err && err.message ? err.message : err) };
+    lastSnapshot = {
+      ok: false,
+      root: settings.root,
+      hasData: false,
+      error: String(err && err.message ? err.message : err),
+    };
   }
   if (tray && !tray.isDestroyed()) {
     tray.setTitle(' ' + trayTitle(lastSnapshot));
@@ -106,7 +112,10 @@ function createPanel() {
   panel.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
 
   panel.on('blur', () => {
-    if (panel && !panel.isDestroyed() && panel.isVisible()) panel.hide();
+    if (panel && !panel.isDestroyed() && panel.isVisible()) {
+      panel.hide();
+      lastHiddenAt = Date.now();
+    }
   });
 
   // 외부 링크는 기본 브라우저로
@@ -127,10 +136,17 @@ function positionPanel() {
 
 async function togglePanel() {
   if (!panel || panel.isDestroyed()) createPanel();
+
   if (panel.isVisible()) {
     panel.hide();
+    lastHiddenAt = Date.now();
     return;
   }
+
+  // 패널이 열린 상태에서 트레이를 누르면 blur가 먼저 도달해 숨기고,
+  // 그 직후 이 핸들러가 다시 엽니다. 닫힌 것처럼 보이지 않게 막습니다.
+  if (Date.now() - lastHiddenAt < 200) return;
+
   await refresh();
   positionPanel();
   panel.show();
@@ -202,7 +218,10 @@ ipcMain.handle('settings:set', async (_e, patch) => {
 });
 
 ipcMain.handle('panel:close', () => {
-  if (panel && !panel.isDestroyed()) panel.hide();
+  if (panel && !panel.isDestroyed()) {
+    panel.hide();
+    lastHiddenAt = Date.now();
+  }
 });
 
 /* ---------- 생명주기 ---------- */
@@ -223,10 +242,9 @@ if (!app.requestSingleInstanceLock()) {
   });
 }
 
-// 메뉴바 앱이므로 창을 닫아도 종료하지 않습니다.
-app.on('window-all-closed', (e) => {
-  e.preventDefault && e.preventDefault();
-});
+// 메뉴바 앱이므로 창을 숨겨도 종료하지 않습니다.
+// (macOS에서는 기본적으로 종료되지 않지만 명시적으로 둡니다.)
+app.on('window-all-closed', () => {});
 
 app.on('before-quit', () => {
   if (timer) clearInterval(timer);

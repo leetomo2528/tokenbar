@@ -2,7 +2,13 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self';">
+<!--
+  style-src에 'unsafe-inline'이 필요합니다.
+  막대그래프의 폭을 style 속성으로 주기 때문입니다.
+  외부 리소스는 여전히 전부 차단됩니다.
+-->
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'none'; style-src 'self' 'unsafe-inline'; script-src 'self';">
 <title>TokenBar</title>
 <link rel="stylesheet" href="styles.css">
 </head>
