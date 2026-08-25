@@ -14,19 +14,20 @@ macOS 메뉴바에서 **Claude Code 토큰 사용량**을 보는 앱입니다.
 
 ## 설치
 
-[Releases](https://github.com/leetomo2528/tokenbar/releases)에서 `.dmg`를 받으세요.
+[Releases](https://github.com/leetomo2528/tokenbar/releases)에서 `.zip`을 받아
+압축을 풀고 `TokenBar.app`을 **응용 프로그램** 폴더로 옮기세요.
 
-### ⚠️ 처음 열 때 막힐 겁니다
+### ⚠️ 처음 열 때 막힙니다
 
 이 앱은 **코드 서명이 안 되어 있습니다.** 애플 개발자 계정(연 $99)이 없어서입니다.
 숨기지 않고 적어둡니다 — 처음 실행 시 Gatekeeper가 막습니다.
 
 여는 방법:
 
-1. Applications에서 **TokenBar를 우클릭 → 열기**
+1. 응용 프로그램에서 **TokenBar를 우클릭 → 열기**
 2. 경고창에서 한 번 더 **열기**
 
-믿기 어려우면 코드를 직접 보고 빌드하셔도 됩니다:
+믿기 어려우면 코드를 직접 보고 실행하셔도 됩니다:
 
 ```bash
 git clone https://github.com/leetomo2528/tokenbar
@@ -34,6 +35,9 @@ cd tokenbar
 npm install
 npm start
 ```
+
+사이드에 아이콘이 아니라 **숫자가 뜨는 방식**입니다. 숨은 것 같으면
+메뉴바 오른쪽을 확인하세요. 우클릭하면 표시 항목을 바꿀 수 있습니다.
 
 ---
 
