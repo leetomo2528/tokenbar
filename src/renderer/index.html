@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'self'; script-src 'self';">
+<title>TokenBar</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="panel">
+
+    <header>
+      <div class="title">현재 윈도우</div>
+      <div class="sub" id="window-range">—</div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-num" id="window-tokens">—</div>
+      <div class="hero-unit">tokens</div>
+      <div class="hero-meta">
+        <span id="window-calls">—</span>
+        <span class="dot">·</span>
+        <span id="window-cost">—</span>
+      </div>
+    </section>
+
+    <section class="bars" id="breakdown"></section>
+
+    <section class="rows">
+      <div class="row">
+        <span class="row-label">오늘</span>
+        <span class="row-value" id="today-tokens">—</span>
+        <span class="row-sub" id="today-cost"></span>
+      </div>
+      <div class="row">
+        <span class="row-label">이번 주</span>
+        <span class="row-value" id="week-tokens">—</span>
+        <span class="row-sub" id="week-cost"></span>
+      </div>
+    </section>
+
+    <section class="models">
+      <div class="section-title">윈도우 내 모델별</div>
+      <div id="models"></div>
+    </section>
+
+    <footer>
+      <span id="last-activity">—</span>
+      <button id="quit" type="button">닫기</button>
+    </footer>
+
+    <div class="empty" id="empty" hidden>
+      <div class="empty-title">기록을 찾지 못했습니다</div>
+      <div class="empty-body">
+        Claude Code 세션 파일이 없거나 경로가 다릅니다.<br>
+        기본값은 <code>~/.claude/projects</code> 입니다.
+      </div>
+      <div class="empty-path" id="empty-path"></div>
+    </div>
+
+  </div>
+  <script src="renderer.js"></script>
+</body>
+</html>
